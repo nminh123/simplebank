@@ -12,24 +12,24 @@ import (
 const createEntry = `-- name: CreateEntry :one
 INSERT INTO entries (
     account_id,
-    ammount
+    amount
 ) VALUES (
     $1, $2
-) RETURNING id, account_id, ammount, created_at
+) RETURNING id, account_id, amount, created_at
 `
 
 type CreateEntryParams struct {
 	AccountID int64 `json:"account_id"`
-	Ammount   int64 `json:"ammount"`
+	Amount    int64 `json:"amount"`
 }
 
 func (q *Queries) CreateEntry(ctx context.Context, arg CreateEntryParams) (Entry, error) {
-	row := q.db.QueryRowContext(ctx, createEntry, arg.AccountID, arg.Ammount)
+	row := q.db.QueryRowContext(ctx, createEntry, arg.AccountID, arg.Amount)
 	var i Entry
 	err := row.Scan(
 		&i.ID,
 		&i.AccountID,
-		&i.Ammount,
+		&i.Amount,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -46,7 +46,7 @@ func (q *Queries) DeleteEntry(ctx context.Context, id int64) error {
 }
 
 const getEntry = `-- name: GetEntry :one
-SELECT id, account_id, ammount, created_at FROM entries
+SELECT id, account_id, amount, created_at FROM entries
 WHERE id = $1 LIMIT 1
 `
 
@@ -56,14 +56,14 @@ func (q *Queries) GetEntry(ctx context.Context, id int64) (Entry, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.AccountID,
-		&i.Ammount,
+		&i.Amount,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listEntries = `-- name: ListEntries :many
-SELECT id, account_id, ammount, created_at FROM entries
+SELECT id, account_id, amount, created_at FROM entries
 ORDER BY id
 LIMIT $1
 OFFSET $2
@@ -86,7 +86,7 @@ func (q *Queries) ListEntries(ctx context.Context, arg ListEntriesParams) ([]Ent
 		if err := rows.Scan(
 			&i.ID,
 			&i.AccountID,
-			&i.Ammount,
+			&i.Amount,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -104,23 +104,23 @@ func (q *Queries) ListEntries(ctx context.Context, arg ListEntriesParams) ([]Ent
 
 const updateEntry = `-- name: UpdateEntry :one
 UPDATE entries
-SET ammount = $2
+SET amount = $2
 WHERE id = $1
-RETURNING id, account_id, ammount, created_at
+RETURNING id, account_id, amount, created_at
 `
 
 type UpdateEntryParams struct {
-	ID      int64 `json:"id"`
-	Ammount int64 `json:"ammount"`
+	ID     int64 `json:"id"`
+	Amount int64 `json:"amount"`
 }
 
 func (q *Queries) UpdateEntry(ctx context.Context, arg UpdateEntryParams) (Entry, error) {
-	row := q.db.QueryRowContext(ctx, updateEntry, arg.ID, arg.Ammount)
+	row := q.db.QueryRowContext(ctx, updateEntry, arg.ID, arg.Amount)
 	var i Entry
 	err := row.Scan(
 		&i.ID,
 		&i.AccountID,
-		&i.Ammount,
+		&i.Amount,
 		&i.CreatedAt,
 	)
 	return i, err

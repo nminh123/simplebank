@@ -11,10 +11,10 @@ import (
 )
 
 func createRandomEntry(t *testing.T) Entry {
-	account := CreateRandomAccount(t)
+	account := createRandomAccount(t)
 	arg := CreateEntryParams{
 		AccountID: account.ID,
-		Ammount:   util.RandomMoney(),
+		Amount:    util.RandomMoney(),
 	}
 
 	entr, err := testQueries.CreateEntry(context.Background(), arg)
@@ -22,7 +22,7 @@ func createRandomEntry(t *testing.T) Entry {
 	require.NotEmpty(t, entr)
 
 	require.Equal(t, arg.AccountID, entr.AccountID)
-	require.Equal(t, arg.Ammount, entr.Ammount)
+	require.Equal(t, arg.Amount, entr.Amount)
 
 	require.NotZero(t, entr.ID)
 	require.NotZero(t, entr.CreatedAt)
@@ -42,7 +42,7 @@ func TestGetEntry(t *testing.T) {
 
 	require.Equal(t, ent1.ID, ent2.ID)
 	require.Equal(t, ent1.AccountID, ent2.AccountID)
-	require.Equal(t, ent1.Ammount, ent2.Ammount)
+	require.Equal(t, ent1.Amount, ent2.Amount)
 	require.Equal(t, ent1.CreatedAt, ent2.CreatedAt)
 	require.WithinDuration(t, ent1.CreatedAt, ent2.CreatedAt, time.Second)
 }
@@ -51,8 +51,8 @@ func TestUpdateEntry(t *testing.T) {
 	ent1 := createRandomEntry(t)
 
 	arg := UpdateEntryParams{
-		ID:      ent1.ID,
-		Ammount: ent1.Ammount,
+		ID:     ent1.ID,
+		Amount: ent1.Amount,
 	}
 	ent2, err := testQueries.UpdateEntry(context.Background(), arg)
 	require.NoError(t, err)
@@ -60,7 +60,7 @@ func TestUpdateEntry(t *testing.T) {
 
 	require.Equal(t, ent1.ID, ent2.ID)
 	require.Equal(t, ent1.AccountID, ent2.AccountID)
-	require.Equal(t, arg.Ammount, ent2.Ammount)
+	require.Equal(t, arg.Amount, ent2.Amount)
 	require.Equal(t, ent1.CreatedAt, ent2.CreatedAt)
 	require.WithinDuration(t, ent1.CreatedAt, ent2.CreatedAt, time.Second)
 }
